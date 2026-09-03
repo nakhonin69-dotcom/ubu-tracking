@@ -99,7 +99,7 @@ const SUPABASE_URL =
 
 
 const SUPABASE_KEY =
-"ใส่ KEY เดียวกับ index.html";
+"sb_publishable_QHcqpDWzdd1ysgy_g0Eo1A_Epo-WVj9";
 
 
 
