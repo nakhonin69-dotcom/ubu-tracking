@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UBU Tracking - Login</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f1f5f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.box{
+    background:white;
+    width:350px;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 5px 20px #ccc;
+    text-align:center;
+}
+
+h1{
+    color:#0f766e;
+}
+
+input{
+    width:90%;
+    padding:12px;
+    margin:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+button{
+    width:95%;
+    padding:12px;
+    background:#10b981;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#059669;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>UBU Tracking</h1>
+
+<p>ระบบแจ้งปัญหาสำหรับนักศึกษา</p>
+
+<input id="student_id" placeholder="รหัสนักศึกษา">
+
+<button onclick="login()">
+เข้าสู่ระบบ
+</button>
+
+</div>
+
+
+<script>
+
+function login(){
+
+let id = document.getElementById("student_id").value;
+
+if(id==""){
+alert("กรุณากรอกรหัสนักศึกษา");
+}
+else{
+alert("เข้าสู่ระบบสำเร็จ รหัส "+id);
+}
+
+}
+
+</script>
+
+
+</body>
+</html>
