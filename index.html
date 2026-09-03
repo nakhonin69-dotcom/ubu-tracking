@@ -1,84 +1,116 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>UBU Tracking</title>
 
+
 <style>
+
 body{
-    font-family: Arial, sans-serif;
-    background:#f2f6f8;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
+font-family:Arial,sans-serif;
+background:#f2f6f8;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
 }
+
 
 .box{
-    background:white;
-    width:350px;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 5px 20px #ccc;
+
+background:white;
+width:350px;
+padding:30px;
+border-radius:20px;
+box-shadow:0 5px 20px #ccc;
+
 }
+
 
 h1{
-    text-align:center;
-    color:#087f73;
+
+text-align:center;
+color:#087f73;
+
 }
+
 
 input,textarea,select{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border-radius:8px;
-    border:1px solid #ddd;
+
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:8px;
+border:1px solid #ddd;
+
 }
+
 
 button{
-    width:100%;
-    padding:14px;
-    margin-top:15px;
-    background:#10b981;
-    color:white;
-    border:0;
-    border-radius:8px;
-    font-size:16px;
+
+width:100%;
+padding:14px;
+margin-top:15px;
+background:#10b981;
+color:white;
+border:0;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+
 }
 
+
 #problem{
-    display:none;
+
+display:none;
+
 }
+
 </style>
 
 </head>
+
 
 <body>
 
 
 <div class="box" id="login">
 
+
 <h1>UBU Tracking</h1>
+
 
 <p style="text-align:center">
 ระบบแจ้งปัญหาสำหรับนักศึกษา
 </p>
 
+
 <input id="student"
 placeholder="รหัสนักศึกษา">
+
 
 <button onclick="login()">
 เข้าสู่ระบบ
 </button>
 
+
 </div>
+
+
 
 
 
 <div class="box" id="problem">
 
+
 <h1>แจ้งปัญหา</h1>
+
 
 <p>
 รหัสนักศึกษา:
@@ -86,23 +118,50 @@ placeholder="รหัสนักศึกษา">
 </p>
 
 
-<select>
-<option>เลือกประเภทปัญหา</option>
-<option>ห้องเรียน</option>
-<option>อินเทอร์เน็ต</option>
-<option>หอพัก</option>
-<option>อุปกรณ์</option>
-<option>อื่นๆ</option>
+
+<select id="category">
+
+<option value="">
+เลือกประเภทปัญหา
+</option>
+
+<option>
+ห้องเรียน
+</option>
+
+<option>
+อินเทอร์เน็ต
+</option>
+
+<option>
+หอพัก
+</option>
+
+<option>
+อุปกรณ์
+</option>
+
+<option>
+อื่นๆ
+</option>
+
 </select>
 
 
-<textarea rows="5"
+
+
+<textarea id="detail"
+rows="5"
 placeholder="รายละเอียดปัญหา">
 </textarea>
 
+
+
+
 <button onclick="sendProblem()">
-<button onclick="sendProblem()">
+
 ส่งแจ้งปัญหา
+
 </button>
 
 
@@ -110,68 +169,169 @@ placeholder="รายละเอียดปัญหา">
 
 
 
+
+
+<!-- โหลด Supabase -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+
 <script>
 
-const supabaseUrl = "https://zorgnnjbzwmszwak.supabase.co";
-const supabaseKey = "sb_publishable_QHcqDWzdd1ysgy_gEo1A_Epo-Wj9";
 
-const client = window.supabase.createClient(
-  supabaseUrl,
-  supabaseKey
+const supabaseUrl =
+"https://zorgnnjbzwmszwak.supabase.co";
+
+
+const supabaseKey =
+"sb_publishable_QHcqDWzdd1ysgy_gEo1A_Epo-Wj9";
+
+
+
+const client =
+supabase.createClient(
+supabaseUrl,
+supabaseKey
 );
+
+
+
 
 
 function login(){
 
-let id=document.getElementById("student").value;
+
+let id =
+document.getElementById("student").value;
+
+
 
 if(id==""){
+
 alert("กรุณากรอกรหัสนักศึกษา");
+
 return;
+
 }
+
+
 
 document.getElementById("login").style.display="none";
 
+
 document.getElementById("problem").style.display="block";
+
 
 document.getElementById("showID").innerHTML=id;
 
+
+
 }
+
+
+
+
+
+
 
 async function sendProblem(){
 
-alert("เริ่มส่ง");
 
-let student = document.getElementById("showID").innerHTML;
-let category = document.querySelector("select").value;
-let detail = document.querySelector("textarea").value;
 
-alert("อ่านข้อมูลแล้ว");
+let student =
+document.getElementById("showID").innerHTML;
 
-const { data, error } = await client
-.from("problems")
-.insert([
-{
-student_id: student,
-category: category,
-detail: detail,
-status:"รอดำเนินการ"
+
+
+let category =
+document.getElementById("category").value;
+
+
+
+let detail =
+document.getElementById("detail").value;
+
+
+
+
+if(category==""){
+
+alert("กรุณาเลือกประเภทปัญหา");
+
+return;
+
 }
+
+
+
+
+if(detail==""){
+
+alert("กรุณากรอกรายละเอียด");
+
+return;
+
+}
+
+
+
+
+
+const {data,error}=await client
+
+.from("problems")
+
+.insert([
+
+{
+
+student_id:student,
+
+category:category,
+
+detail:detail,
+
+status:"รอดำเนินการ"
+
+}
+
 ]);
 
-alert("ส่งเข้า Supabase แล้ว");
+
+
+
+
 
 if(error){
-alert(error.message);
-}else{
-alert("ส่งสำเร็จ");
-}
+
+alert(
+"เกิดข้อผิดพลาด: "
++
+error.message
+);
+
+
+console.log(error);
+
+
+return;
 
 }
 
+
+
+alert("ส่งปัญหาสำเร็จ");
+
+
+
 }
+
+
+
 </script>
 
 
 </body>
+
 </html>
