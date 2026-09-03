@@ -12,27 +12,33 @@
 <style>
 
 body{
+
 font-family:Arial,sans-serif;
 background:#f2f6f8;
 display:flex;
 justify-content:center;
 align-items:center;
 min-height:100vh;
+
 }
 
 
 .box{
+
 background:white;
 width:350px;
 padding:30px;
 border-radius:20px;
 box-shadow:0 5px 20px #ccc;
+
 }
 
 
 h1{
+
 text-align:center;
 color:#087f73;
+
 }
 
 
@@ -48,6 +54,7 @@ box-sizing:border-box;
 }
 
 
+
 button{
 
 width:100%;
@@ -58,17 +65,28 @@ color:white;
 border:none;
 border-radius:8px;
 font-size:16px;
+cursor:pointer;
 
 }
 
 
+
+button:hover{
+
+background:#059669;
+
+}
+
+
+
 #problem{
+
 display:none;
+
 }
 
 
 </style>
-
 
 </head>
 
@@ -83,22 +101,24 @@ display:none;
 <h1>UBU Tracking</h1>
 
 
-<p style="text-align:center">
+<p align="center">
 ระบบแจ้งปัญหาสำหรับนักศึกษา
 </p>
 
 
-<input id="student"
+<input 
+id="student"
 placeholder="รหัสนักศึกษา">
 
 
 <button onclick="login()">
+
 เข้าสู่ระบบ
+
 </button>
 
 
 </div>
-
 
 
 
@@ -126,37 +146,38 @@ placeholder="รหัสนักศึกษา">
 เลือกประเภทปัญหา
 </option>
 
-<option>
+<option value="ห้องเรียน">
 ห้องเรียน
 </option>
 
-<option>
+<option value="อินเทอร์เน็ต">
 อินเทอร์เน็ต
 </option>
 
-<option>
+<option value="หอพัก">
 หอพัก
 </option>
 
-<option>
+<option value="อุปกรณ์">
 อุปกรณ์
 </option>
 
-<option>
+<option value="อื่นๆ">
 อื่นๆ
 </option>
+
 
 </select>
 
 
 
 
-<textarea 
+<textarea
 id="detail"
 rows="5"
 placeholder="รายละเอียดปัญหา">
-</textarea>
 
+</textarea>
 
 
 
@@ -167,13 +188,12 @@ placeholder="รายละเอียดปัญหา">
 </button>
 
 
+
 </div>
 
 
 
 
-
-<!-- Supabase -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -182,31 +202,43 @@ placeholder="รายละเอียดปัญหา">
 <script>
 
 
-// ==========================
-// ใส่ค่าของคุณตรงนี้
-// ==========================
+// =============================
+// ใส่ข้อมูล Supabase ของจริง
+// =============================
 
 
 const SUPABASE_URL =
 "https://ใส่-project-url.supabase.co";
 
 
-const SUPABASE_ANON_KEY =
+const SUPABASE_KEY =
 "ใส่-anon-public-key";
 
 
 
+// ตรวจสอบ Supabase
 
-// สร้าง Client
+
+let db = null;
 
 
-const client =
-supabase.createClient(
+if(
+SUPABASE_URL.includes("supabase.co")
+&&
+!SUPABASE_KEY.includes("ใส่")
+){
+
+db = window.supabase.createClient(
 SUPABASE_URL,
-SUPABASE_ANON_KEY
+SUPABASE_KEY
 );
 
+}
 
+
+
+
+let currentStudent="";
 
 
 
@@ -217,13 +249,15 @@ function login(){
 
 
 let id =
-document.getElementById("student").value.trim();
+document.getElementById("student")
+.value
+.trim();
 
 
 
-if(id===""){
+if(id.length < 5){
 
-alert("กรุณากรอกรหัสนักศึกษา");
+alert("กรุณากรอกรหัสนักศึกษาให้ถูกต้อง");
 
 return;
 
@@ -231,17 +265,25 @@ return;
 
 
 
-document.getElementById("login").style.display="none";
+currentStudent=id;
 
 
-document.getElementById("problem").style.display="block";
+
+document.getElementById("showID")
+.textContent=id;
 
 
-document.getElementById("showID").textContent=id;
+
+document.getElementById("login")
+.style.display="none";
+
+
+document.getElementById("problem")
+.style.display="block";
+
 
 
 }
-
 
 
 
@@ -252,21 +294,16 @@ document.getElementById("showID").textContent=id;
 async function sendProblem(){
 
 
-
-let student =
-document.getElementById("showID").textContent;
-
-
-
 let category =
-document.getElementById("category").value;
+document.getElementById("category")
+.value;
 
 
 
 let detail =
-document.getElementById("detail").value.trim();
-
-
+document.getElementById("detail")
+.value
+.trim();
 
 
 
@@ -291,42 +328,10 @@ return;
 
 
 
-
-
-try{
-
-
-const {data,error}=await client
-
-.from("problems")
-
-.insert([
-
-{
-
-student_id:student,
-
-category:category,
-
-detail:detail,
-
-status:"รอดำเนินการ"
-
-}
-
-]);
-
-
-
-
-
-if(error){
-
-console.log(error);
+if(db===null){
 
 alert(
-"ส่งไม่สำเร็จ : "
-+ error.message
+"ยังไม่ได้เชื่อมต่อ Supabase"
 );
 
 return;
@@ -335,35 +340,73 @@ return;
 
 
 
-alert("ส่งแจ้งปัญหาสำเร็จ");
+
+let data={
+
+
+student_id:currentStudent,
+
+category:category,
+
+detail:detail,
+
+status:"รอดำเนินการ",
+
+created_at:
+new Date()
+
+
+};
 
 
 
-// ล้างข้อมูล
-
-document.getElementById("detail").value="";
 
 
-}
+const {error}=await db
+
+.from("problems")
+
+.insert([data]);
 
 
 
-catch(err){
 
 
-console.log(err);
+if(error){
 
 
 alert(
-"เชื่อมต่อฐานข้อมูลไม่ได้"
+"เกิดข้อผิดพลาด : "
++
+error.message
 );
 
 
+console.log(error);
+
+return;
+
+
 }
 
 
 
+alert(
+"แจ้งปัญหาสำเร็จ"
+);
+
+
+
+document.getElementById("detail")
+.value="";
+
+
+document.getElementById("category")
+.value="";
+
+
 }
+
 
 
 
