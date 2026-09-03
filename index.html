@@ -22,31 +22,28 @@ min-height:100vh;
 
 
 .box{
-
 background:white;
 width:350px;
 padding:30px;
 border-radius:20px;
 box-shadow:0 5px 20px #ccc;
-
 }
 
 
 h1{
-
 text-align:center;
 color:#087f73;
-
 }
 
 
-input,textarea,select{
+input,select,textarea{
 
 width:100%;
 padding:12px;
 margin-top:10px;
 border-radius:8px;
 border:1px solid #ddd;
+box-sizing:border-box;
 
 }
 
@@ -58,26 +55,26 @@ padding:14px;
 margin-top:15px;
 background:#10b981;
 color:white;
-border:0;
+border:none;
 border-radius:8px;
 font-size:16px;
-cursor:pointer;
 
 }
 
 
 #problem{
-
 display:none;
-
 }
 
+
 </style>
+
 
 </head>
 
 
 <body>
+
 
 
 <div class="box" id="login">
@@ -106,16 +103,20 @@ placeholder="รหัสนักศึกษา">
 
 
 
+
 <div class="box" id="problem">
 
 
-<h1>แจ้งปัญหา</h1>
+<h1>
+แจ้งปัญหา
+</h1>
 
 
 <p>
-รหัสนักศึกษา:
+รหัสนักศึกษา :
 <span id="showID"></span>
 </p>
+
 
 
 
@@ -150,7 +151,8 @@ placeholder="รหัสนักศึกษา">
 
 
 
-<textarea id="detail"
+<textarea 
+id="detail"
 rows="5"
 placeholder="รายละเอียดปัญหา">
 </textarea>
@@ -171,7 +173,7 @@ placeholder="รายละเอียดปัญหา">
 
 
 
-<!-- โหลด Supabase -->
+<!-- Supabase -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -180,34 +182,46 @@ placeholder="รายละเอียดปัญหา">
 <script>
 
 
-const supabaseUrl =
-"https://zorgnnjbzwmszwak.supabase.co";
+// ==========================
+// ใส่ค่าของคุณตรงนี้
+// ==========================
 
 
-const supabaseKey =
-"sb_publishable_QHcqDWzdd1ysgy_gEo1A_Epo-Wj9";
+const SUPABASE_URL =
+"https://ใส่-project-url.supabase.co";
 
+
+const SUPABASE_ANON_KEY =
+"ใส่-anon-public-key";
+
+
+
+
+// สร้าง Client
 
 
 const client =
 supabase.createClient(
-supabaseUrl,
-supabaseKey
+SUPABASE_URL,
+SUPABASE_ANON_KEY
 );
 
 
 
 
 
+// LOGIN
+
+
 function login(){
 
 
 let id =
-document.getElementById("student").value;
+document.getElementById("student").value.trim();
 
 
 
-if(id==""){
+if(id===""){
 
 alert("กรุณากรอกรหัสนักศึกษา");
 
@@ -223,8 +237,7 @@ document.getElementById("login").style.display="none";
 document.getElementById("problem").style.display="block";
 
 
-document.getElementById("showID").innerHTML=id;
-
+document.getElementById("showID").textContent=id;
 
 
 }
@@ -233,6 +246,7 @@ document.getElementById("showID").innerHTML=id;
 
 
 
+// ส่งข้อมูล
 
 
 async function sendProblem(){
@@ -240,7 +254,7 @@ async function sendProblem(){
 
 
 let student =
-document.getElementById("showID").innerHTML;
+document.getElementById("showID").textContent;
 
 
 
@@ -250,12 +264,13 @@ document.getElementById("category").value;
 
 
 let detail =
-document.getElementById("detail").value;
+document.getElementById("detail").value.trim();
 
 
 
 
-if(category==""){
+
+if(category===""){
 
 alert("กรุณาเลือกประเภทปัญหา");
 
@@ -265,8 +280,7 @@ return;
 
 
 
-
-if(detail==""){
+if(detail===""){
 
 alert("กรุณากรอกรายละเอียด");
 
@@ -276,6 +290,10 @@ return;
 
 
 
+
+
+
+try{
 
 
 const {data,error}=await client
@@ -302,18 +320,14 @@ status:"รอดำเนินการ"
 
 
 
-
 if(error){
-
-alert(
-"เกิดข้อผิดพลาด: "
-+
-error.message
-);
-
 
 console.log(error);
 
+alert(
+"ส่งไม่สำเร็จ : "
++ error.message
+);
 
 return;
 
@@ -321,7 +335,31 @@ return;
 
 
 
-alert("ส่งปัญหาสำเร็จ");
+alert("ส่งแจ้งปัญหาสำเร็จ");
+
+
+
+// ล้างข้อมูล
+
+document.getElementById("detail").value="";
+
+
+}
+
+
+
+catch(err){
+
+
+console.log(err);
+
+
+alert(
+"เชื่อมต่อฐานข้อมูลไม่ได้"
+);
+
+
+}
 
 
 
