@@ -138,12 +138,15 @@ document.getElementById("showID").innerHTML=id;
 
 }
 
- async function sendProblem(){
+async function sendProblem(){
 
+alert("เริ่มส่ง");
 
 let student = document.getElementById("showID").innerHTML;
 let category = document.querySelector("select").value;
 let detail = document.querySelector("textarea").value;
+
+alert("อ่านข้อมูลแล้ว");
 
 const { data, error } = await client
 .from("problems")
@@ -156,11 +159,14 @@ status:"รอดำเนินการ"
 }
 ]);
 
+alert("ส่งเข้า Supabase แล้ว");
+
 if(error){
-alert("ส่งข้อมูลไม่สำเร็จ");
-console.log(error);
+alert(error.message);
 }else{
-alert("ส่งปัญหาสำเร็จ");
+alert("ส่งสำเร็จ");
+}
+
 }
 
 }
