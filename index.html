@@ -3,52 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UBU Tracking - Login</title>
+<title>UBU Tracking</title>
 
 <style>
 body{
     font-family: Arial, sans-serif;
-    background:#f1f5f9;
+    background:#f2f6f8;
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100vh;
+    min-height:100vh;
 }
 
 .box{
     background:white;
     width:350px;
     padding:30px;
-    border-radius:15px;
+    border-radius:20px;
     box-shadow:0 5px 20px #ccc;
-    text-align:center;
 }
 
 h1{
-    color:#0f766e;
+    text-align:center;
+    color:#087f73;
 }
 
-input{
-    width:90%;
+input,textarea,select{
+    width:100%;
     padding:12px;
-    margin:10px;
+    margin-top:10px;
     border-radius:8px;
-    border:1px solid #ccc;
+    border:1px solid #ddd;
 }
 
 button{
-    width:95%;
-    padding:12px;
+    width:100%;
+    padding:14px;
+    margin-top:15px;
     background:#10b981;
     color:white;
-    border:none;
+    border:0;
     border-radius:8px;
-    cursor:pointer;
     font-size:16px;
 }
 
-button:hover{
-    background:#059669;
+#problem{
+    display:none;
 }
 </style>
 
@@ -56,13 +56,17 @@ button:hover{
 
 <body>
 
-<div class="box">
+
+<div class="box" id="login">
 
 <h1>UBU Tracking</h1>
 
-<p>ระบบแจ้งปัญหาสำหรับนักศึกษา</p>
+<p style="text-align:center">
+ระบบแจ้งปัญหาสำหรับนักศึกษา
+</p>
 
-<input id="student_id" placeholder="รหัสนักศึกษา">
+<input id="student"
+placeholder="รหัสนักศึกษา">
 
 <button onclick="login()">
 เข้าสู่ระบบ
@@ -71,18 +75,57 @@ button:hover{
 </div>
 
 
+
+<div class="box" id="problem">
+
+<h1>แจ้งปัญหา</h1>
+
+<p>
+รหัสนักศึกษา:
+<span id="showID"></span>
+</p>
+
+
+<select>
+<option>เลือกประเภทปัญหา</option>
+<option>ห้องเรียน</option>
+<option>อินเทอร์เน็ต</option>
+<option>หอพัก</option>
+<option>อุปกรณ์</option>
+<option>อื่นๆ</option>
+</select>
+
+
+<textarea rows="5"
+placeholder="รายละเอียดปัญหา">
+</textarea>
+
+
+<button>
+ส่งแจ้งปัญหา
+</button>
+
+
+</div>
+
+
+
 <script>
 
 function login(){
 
-let id = document.getElementById("student_id").value;
+let id=document.getElementById("student").value;
 
 if(id==""){
 alert("กรุณากรอกรหัสนักศึกษา");
+return;
 }
-else{
-alert("เข้าสู่ระบบสำเร็จ รหัส "+id);
-}
+
+document.getElementById("login").style.display="none";
+
+document.getElementById("problem").style.display="block";
+
+document.getElementById("showID").innerHTML=id;
 
 }
 
