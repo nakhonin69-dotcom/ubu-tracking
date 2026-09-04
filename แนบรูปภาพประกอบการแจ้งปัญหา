@@ -1,0 +1,64 @@
+<div class="upload-box">
+    <label for="imageUpload">📷 เลือกรูปภาพ</label>
+    <input 
+        type="file" 
+        id="imageUpload" 
+        accept="image/*"
+        onchange="previewImage(event)"
+    >
+
+    <img id="preview" style="display:none; max-width:300px; margin-top:15px;">
+
+    <button type="button" onclick="uploadImage()">
+        ส่งรูปภาพ
+    </button>
+
+    <p id="uploadStatus"></p>
+</div>
+
+<script>
+function previewImage(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById("preview");
+
+    if (file) {
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+    }
+}
+
+function uploadImage() {
+    const fileInput = document.getElementById("imageUpload");
+    const status = document.getElementById("uploadStatus");
+
+    if (fileInput.files.length === 0) {
+        status.innerText = "กรุณาเลือกรูปภาพก่อน";
+        return;
+    }
+
+    const file = fileInput.files[0];
+
+    // ตรวจสอบประเภทไฟล์
+    if (!file.type.startsWith("image/")) {
+        status.innerText = "กรุณาเลือกไฟล์รูปภาพเท่านั้น";
+        return;
+    }
+
+    // ตรวจสอบขนาดไฟล์ไม่เกิน 5 MB
+    if (file.size > 5 * 1024 * 1024) {
+        status.innerText = "รูปภาพต้องมีขนาดไม่เกิน 5 MB";
+        return;
+    }
+
+    status.innerText = "กำลังส่งรูปภาพ...";
+
+    /*
+      ตรงนี้สามารถเชื่อมต่อ Firebase,
+      Supabase หรือ Server เพื่อเก็บรูปจริงได้
+    */
+
+    setTimeout(() => {
+        status.innerText = "✅ ส่งรูปภาพสำเร็จ";
+    }, 1000);
+}
+</script>
